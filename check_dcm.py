@@ -45,14 +45,14 @@ parser.add_argument("-p", "--port", default='104', help="tcp/ip port number of m
 
 try:
 	args = parser.parse_args()
-except SystemExit, e:
+except SystemExit as e:
 	# bad args, so service state unknown
 	sys.exit(STATE_UNKNOWN)
 	raise e
 
 if args.version:
 	# service state unknown, but here's your version number.
-	print VERSION
+	print(VERSION)
 	sys.exit(STATE_UNKNOWN)
 
 # build command line arguments
@@ -82,32 +82,29 @@ cmd.append(args.port)
 # send out a dicom ping and see what comes back
 try:
 	p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-except Exception, e:
+except Exception as e:
 	sys.exit(STATE_UNKNOWN)
 else:
 	stdout = p.communicate()[0]
 
 	if p.returncode:
 		if args.verbosity:
-			print "DICOM CRITICAL - Association Request Failed (TCP Initialization Error: Connection refused)"
+			print("DICOM CRITICAL - Association Request Failed (TCP Initialization Error: Connection refused)")
 			if args.verbosity > 1:
 				for line in stdout.splitlines():
-					print line
+					print(line)
 		else:
-			print "DICOM CRITICAL - Association Request Failed"
+			print("DICOM CRITICAL - Association Request Failed")
 
 		sys.exit(STATE_CRITICAL)
 
 	else:
 		if args.verbosity:
-			print "DICOM OK - Association Accepted (Received Echo Response (Status: Success))"
+			print("DICOM OK - Association Accepted (Received Echo Response (Status: Success))")
 			if args.verbosity > 1:
 				for line in stdout.splitlines():
-					print line
+					print(line)
 		else:
-			print "DICOM OK - Association Accepted"
+			print("DICOM OK - Association Accepted")
 
 		sys.exit(STATE_OK)
-
-
-
